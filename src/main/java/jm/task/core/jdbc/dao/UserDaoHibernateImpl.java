@@ -24,6 +24,7 @@ public class UserDaoHibernateImpl implements UserDao {
                     "lastName VARCHAR(50)," +
                     "age INTEGER)").executeUpdate();
             session.getTransaction().commit();
+            session.getTransaction().rollback();
             System.out.println("Created successfully!!");
         }catch (HibernateException h){
             h.printStackTrace();
@@ -36,6 +37,7 @@ public class UserDaoHibernateImpl implements UserDao {
         session.beginTransaction();
         session.createSQLQuery("drop table users").executeUpdate();
         session.getTransaction().commit();
+        session.getTransaction().rollback();
         System.out.println("Table users dropped");
     }catch (Exception h){
         h.printStackTrace();
@@ -48,6 +50,7 @@ public class UserDaoHibernateImpl implements UserDao {
         session.beginTransaction();
         session.persist(new User(name,lastName,age));
         session.getTransaction().commit();
+        session.getTransaction().rollback();
         System.out.println("User with name " + name + " inserted to database");
     }catch (Exception h){
         h.printStackTrace();
@@ -61,6 +64,7 @@ public class UserDaoHibernateImpl implements UserDao {
             User user = session.get(User.class,id);
             session.delete(user);
             session.getTransaction().commit();
+            session.getTransaction().rollback();
             System.out.println("User with " + id + "id is deleted from database");
         }catch (Exception h){
             h.printStackTrace();
@@ -75,6 +79,7 @@ public class UserDaoHibernateImpl implements UserDao {
         users = session.createQuery("select a from User a",User.class).getResultList();
       //  users.add();
         session.getTransaction().commit();
+        session.getTransaction().rollback();
         System.out.println("Found " + users.size() + " users");
     }catch (Exception h){
         h.printStackTrace();
@@ -88,6 +93,7 @@ public class UserDaoHibernateImpl implements UserDao {
         session.beginTransaction();
         session.createSQLQuery("delete from users").executeUpdate();
         session.getTransaction().commit();
+        session.getTransaction().rollback();
         System.out.println("Successfully deleted all data in users");
     }catch (Exception h){
         h.printStackTrace();

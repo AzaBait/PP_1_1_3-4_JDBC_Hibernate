@@ -18,8 +18,8 @@ public class Main {
 //        daoHibernate.saveUser("Ruslan", "Maratov", (byte) 29);
 //        daoHibernate.saveUser("Anvar", "Mirzaev", (byte) 25);
 //        daoHibernate.saveUser("Nikolay", "Petrov", (byte) 38);
-        List<User> users= daoHibernate.getAllUsers();
-        System.out.println(users);
+//        List<User> users= daoHibernate.getAllUsers();
+//        System.out.println(users);
 //              daoHibernate.cleanUsersTable();
 //        daoHibernate.dropUsersTable();
     }

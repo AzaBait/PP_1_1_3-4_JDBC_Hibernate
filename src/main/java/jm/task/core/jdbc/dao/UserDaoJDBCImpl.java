@@ -20,6 +20,7 @@ public class UserDaoJDBCImpl implements UserDao {
                       " name varchar(20) not null, " +
                       " lastName varchar(30) not null, " +
                       " age int)");
+              connection.rollback();
             System.out.println("Table Users created!!");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,6 +32,7 @@ public class UserDaoJDBCImpl implements UserDao {
         Statement statement = connection.createStatement()) {
             statement.executeUpdate("drop table users");
             System.out.println("Table Users dropped!!");
+            connection.rollback();
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -45,7 +47,9 @@ public class UserDaoJDBCImpl implements UserDao {
              preparedStatement.setString(2, lastName);
              preparedStatement.setByte(3, age);
              preparedStatement.executeUpdate();
+             connection.rollback();
             System.out.println("User with name " + name + " inserted to database");
+
         }catch (SQLException e){
             e.printStackTrace();
         };
@@ -57,7 +61,9 @@ public class UserDaoJDBCImpl implements UserDao {
     PreparedStatement preparedStatement = connection.prepareStatement("delete from users where id=?")){
     preparedStatement.setLong(1, id);
     preparedStatement.executeUpdate();
+    connection.rollback();
         System.out.println("User with " + id + "id is deleted from database");
+
     }catch (SQLException e){
         e.printStackTrace();
     }
@@ -74,7 +80,7 @@ public class UserDaoJDBCImpl implements UserDao {
                         resultSet.getString("lastName"),
                         resultSet.getByte("age"));
                 users.add(user);
-            }
+            }connection.rollback();
             System.out.println(users.size() + " users founded: " + users);
         } catch (SQLException throwables) {
             System.out.println(throwables.getMessage());
@@ -86,6 +92,7 @@ public class UserDaoJDBCImpl implements UserDao {
         try (Connection connection = Util.connection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate("delete from users;");
+            connection.rollback();
             System.out.println("DELETED ALL USERS");
         } catch (SQLException throwables) {
             System.out.println(throwables.getMessage());
