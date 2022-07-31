@@ -22,6 +22,7 @@ public class Util {
         try {
 
             connect = DriverManager.getConnection(url, login, password);
+            connect.setAutoCommit(false);
             System.out.println("Connected to MySql server successfelly!!!");
         } catch (SQLException e) {
             e.printStackTrace();
