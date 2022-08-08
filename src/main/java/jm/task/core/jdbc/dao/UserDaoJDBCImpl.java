@@ -9,41 +9,43 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    Connection connection = Util.connection();
+
     public UserDaoJDBCImpl() {
 
     }
 
     public void createUsersTable() throws SQLException {
 
-        try (
+        try (Connection connection = Util.connection();
               Statement statement = connection.createStatement()){
               statement.executeUpdate(" CREATE TABLE users (id serial primary key , " +
                       " name varchar(20) not null, " +
                       " lastName varchar(30) not null, " +
                       " age int)");
                 connection.commit();
+
             System.out.println("Table Users created!!");
         } catch (SQLException e) {
-            connection.rollback();e.printStackTrace();
+            e.printStackTrace();
         }
     }
 
     public void dropUsersTable() throws SQLException {
-        try (
+        try (Connection connection = Util.connection();
         Statement statement = connection.createStatement()) {
             statement.executeUpdate("drop table users");
             System.out.println("Table Users dropped!!");
             connection.commit();
+
         }catch (SQLException e){
-            connection.rollback();e.printStackTrace();
+            e.printStackTrace();
         }
 
     }
 
     public void saveUser(String name, String lastName, byte age) throws SQLException {
         String sql = "insert into users (name,lastName,age) values (?,?,?)";
-        try (
+        try (Connection connection = Util.connection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)){
              preparedStatement.setString(1, name);
              preparedStatement.setString(2, lastName);
@@ -51,16 +53,17 @@ public class UserDaoJDBCImpl implements UserDao {
              preparedStatement.executeUpdate();
              connection.commit();
 
+
             System.out.println("User with name " + name + " inserted to database");
 
         }catch (SQLException e){
-            connection.rollback();e.printStackTrace();
+            e.printStackTrace();
         };
 
     }
 
     public void removeUserById(long id) throws SQLException {
-    try (
+    try (Connection connection = Util.connection();
     PreparedStatement preparedStatement = connection.prepareStatement("delete from users where id=?")){
     preparedStatement.setLong(1, id);
     preparedStatement.executeUpdate();
@@ -68,13 +71,13 @@ public class UserDaoJDBCImpl implements UserDao {
         System.out.println("User with " + id + "id is deleted from database");
 
     }catch (SQLException e){
-        connection.rollback();
+        e.printStackTrace();
     }
     }
 
     public List<User> getAllUsers() throws SQLException {
         List<User> users = new ArrayList<>();
-        try (
+        try (Connection connection = Util.connection();
              Statement statement = connection.createStatement();
              ResultSet resultSet = statement.executeQuery("select * from users")) {
             while (resultSet.next()) {
@@ -86,19 +89,19 @@ public class UserDaoJDBCImpl implements UserDao {
             }connection.commit();
             System.out.println(users.size() + " users founded: " + users);
         } catch (SQLException throwables) {
-            connection.rollback();System.out.println(throwables.getMessage());
+            System.out.println(throwables.getMessage());
         }
         return users;
     }
 
     public void cleanUsersTable() throws SQLException {
-        try (
+        try (Connection connection = Util.connection();
              Statement statement = connection.createStatement()) {
             statement.executeUpdate("delete from users;");
             connection.commit();
             System.out.println("DELETED ALL USERS");
         } catch (SQLException throwables) {
-            connection.rollback(); System.out.println(throwables.getMessage());
+             System.out.println(throwables.getMessage());
         }
     }
 }

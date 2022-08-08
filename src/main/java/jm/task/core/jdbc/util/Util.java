@@ -46,6 +46,7 @@ public class Util {
                         .setProperty(Environment.SHOW_SQL, "true")
                         .addAnnotatedClass(User.class)
                         .buildSessionFactory();
+
             }
         }catch (Exception h){
             h.printStackTrace();

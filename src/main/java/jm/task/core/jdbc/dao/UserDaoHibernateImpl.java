@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
+
+    Session session = Util.getSessionFactory().openSession();
     public UserDaoHibernateImpl() {
 
     }
@@ -16,7 +18,7 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void createUsersTable() {
-        try(Session session = Util.getSessionFactory().openSession()){
+        try{
             session.beginTransaction();
             session.createSQLQuery("CREATE TABLE IF NOT EXISTS users " +
                     "(id SERIAL PRIMARY KEY ," +
@@ -24,78 +26,78 @@ public class UserDaoHibernateImpl implements UserDao {
                     "lastName VARCHAR(50)," +
                     "age INTEGER)").executeUpdate();
             session.getTransaction().commit();
-            session.getTransaction().rollback();
+
             System.out.println("Created successfully!!");
         }catch (HibernateException h){
-            h.printStackTrace();
+            session.getTransaction().rollback();h.printStackTrace();
         }
     }
 
     @Override
     public void dropUsersTable() {
-    try(Session session = Util.getSessionFactory().openSession()){
+    try{
         session.beginTransaction();
         session.createSQLQuery("drop table users").executeUpdate();
         session.getTransaction().commit();
-        session.getTransaction().rollback();
+
         System.out.println("Table users dropped");
     }catch (Exception h){
-        h.printStackTrace();
+        session.getTransaction().rollback(); h.printStackTrace();
     }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-    try(Session session = Util.getSessionFactory().openSession()){
+    try{
         session.beginTransaction();
         session.persist(new User(name,lastName,age));
         session.getTransaction().commit();
-        session.getTransaction().rollback();
+
         System.out.println("User with name " + name + " inserted to database");
     }catch (Exception h){
-        h.printStackTrace();
+        session.getTransaction().rollback(); h.printStackTrace();
     }
     }
 
     @Override
     public void removeUserById(long id) {
-        try (Session session = Util.getSessionFactory().openSession()){
+        try {
             session.beginTransaction();
             User user = session.get(User.class,id);
             session.delete(user);
             session.getTransaction().commit();
-            session.getTransaction().rollback();
+
             System.out.println("User with " + id + "id is deleted from database");
         }catch (Exception h){
-            h.printStackTrace();
+            session.getTransaction().rollback(); h.printStackTrace();
         }
     }
 
     @Override
     public List<User> getAllUsers() {
     List<User> users = new ArrayList<>();
-    try (Session session = Util.getSessionFactory().openSession()){
+    try {
         session.beginTransaction();
         users = session.createQuery("select a from User a",User.class).getResultList();
         session.getTransaction().commit();
-        session.getTransaction().rollback();
+
         System.out.println("Found " + users.size() + " users");
     }catch (Exception h){
-        h.printStackTrace();
+        session.getTransaction().rollback();h.printStackTrace();
     }
         return users;
     }
 
     @Override
     public void cleanUsersTable() {
-    try (Session session = Util.getSessionFactory().openSession()){
+    try {
         session.beginTransaction();
         session.createSQLQuery("delete from users").executeUpdate();
         session.getTransaction().commit();
-        session.getTransaction().rollback();
+
         System.out.println("Successfully deleted all data in users");
     }catch (Exception h){
-        h.printStackTrace();
+        session.getTransaction().rollback(); h.printStackTrace();
     }
     }
 }
